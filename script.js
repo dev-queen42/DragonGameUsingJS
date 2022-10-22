@@ -1,8 +1,9 @@
 score = 0;
 cross = true;
+isPlaying = false;
 
-audio = new Audio('music.mp3');
-audiogo = new Audio('gameover.mp3');
+audio = new Audio('assets/sounds/music.mp3');
+audiogo = new Audio('assets/sounds/gameover.mp3');
 setTimeout(() => {
     audio.play()
 }, 1000);
@@ -28,6 +29,8 @@ document.onkeydown = function (e) {
 }
 
 setInterval(() => {
+    if (!isPlaying) return
+
     dino = document.querySelector('.dino');
     gameOver = document.querySelector('.gameOver');
     obstacle = document.querySelector('.obstacle');
@@ -42,9 +45,11 @@ setInterval(() => {
     offsetY = Math.abs(dy - oy);
     // console.log(offsetX, offsetY)
     if (offsetX < 73 && offsetY < 52) {
-        gameOver.innerHTML = "Game Over - Reload to Play Again"
+        gameOver.innerHTML = "Game Over"
         obstacle.classList.remove('obstacleAni')
         audiogo.play();
+        restartButton.classList.remove('hide');
+        isPlaying = false;
         setTimeout(() => {
             audiogo.pause();
             audio.pause();
@@ -69,5 +74,22 @@ setInterval(() => {
 }, 10);
 
 function updateScore(score) {
-    scoreCont.innerHTML = "Your Score: " + score
+    scoreCont.innerHTML = "Your Score: " + score;
+}
+
+document.getElementById('playButton').addEventListener('click', () => {
+    playButton.classList.add('hide');
+    play();
+})
+
+document.getElementById('restartButton').addEventListener('click', () => {
+    restartButton.classList.add('hide');
+    play();
+})
+
+function play() {
+    score = 0;
+    updateScore(0);
+    document.querySelector('.obstacle').classList.add('obstacleAni');
+    isPlaying = true
 }
